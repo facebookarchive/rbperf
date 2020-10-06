@@ -20,7 +20,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-18.04] 
+        os: [ubuntu-18.04]
         python-version: [3.7]
 
     steps:
@@ -46,7 +46,7 @@ jobs:
     - name: Install Python deps
       run: |
         python3 -m pip install --upgrade pip
-        pip3 install setuptools 
+        pip3 install setuptools
     - name: Install rbperf
       run: |
         pip3 install '.[dev]'
@@ -59,10 +59,20 @@ jobs:
              sudo \
 
     - name: Install BCC
-      run: | 
-        echo "deb [trusted=yes] https://repo.iovisor.org/apt/bionic bionic-nightly main" | sudo tee /etc/apt/sources.list.d/iovisor.list
-        sudo apt-get update
-        sudo apt-get install bcc-tools libbcc-examples linux-headers-$(uname -r)
+      run: |
+       sudo apt-get -y install bison build-essential cmake flex git libedit-dev \
+       libllvm6.0 llvm-6.0-dev libclang-6.0-dev python zlib1g-dev libelf-dev
+
+       git clone https://github.com/iovisor/bcc.git
+       mkdir bcc/build; cd bcc/build
+       cmake ..
+       make
+       sudo make install
+       cmake -DPYTHON_CMD=python3 .. # build python3 binding
+       pushd src/python/
+       make
+       sudo make install
+       popd
 
     - name: Run tests
       run: |
