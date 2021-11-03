@@ -152,7 +152,7 @@ class TestStackWalker(unittest.TestCase):
 
         self.assertEqual(stacktrace["stack_status"], 1)  # stack is incomplete
         # as we can't collect all the frames, if there's any C frame in between this numbe might be slightly different
-        self.assertGreater(len(stacktrace["frames"]), 43)
+        self.assertGreater(len(stacktrace["frames"]), 40)
         first_frame = stacktrace["frames"][0]
         rest_frames = stacktrace["frames"][2:70]
 
