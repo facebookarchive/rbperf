@@ -23,6 +23,7 @@ class VersionConfig(Structure):
 
 offsets_for_version: Dict[Tuple[str, ...], VersionConfig] = {}
 
+# see docs/ruby_offset.c
 offsets_for_version[("2.4.4", "2.4.10")] = VersionConfig(
     vm_offset=c_int(0x20),  # offsetof(struct rb_thread_struct, stack)
     vm_size_offset=c_int(0x28),  # offsetof(struct rb_thread_struct, stack_size)
