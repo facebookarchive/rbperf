@@ -110,6 +110,7 @@ class TestStackWalker(unittest.TestCase):
     def test_stacks_for_different_each_ruby_version(self):
         ruby_versions = [
             "ruby-2.4.4",
+            "ruby-2.4.10",
             "ruby-2.5.0",
             "ruby-2.5.7",
             "ruby-2.5.8",
