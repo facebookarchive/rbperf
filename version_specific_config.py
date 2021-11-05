@@ -23,16 +23,17 @@ class VersionConfig(Structure):
 
 offsets_for_version: Dict[Tuple[str, ...], VersionConfig] = {}
 
-offsets_for_version[("2.4.4",)] = VersionConfig(
+# see docs/ruby_offset.c
+offsets_for_version[("2.4.4", "2.4.10")] = VersionConfig(
     vm_offset=c_int(0x20),  # offsetof(struct rb_thread_struct, stack)
     vm_size_offset=c_int(0x28),  # offsetof(struct rb_thread_struct, stack_size)
     control_frame_t_sizeof=c_int(0x30),  # sizeof(rb_control_frame_t)
-    cfp_offset=c_int(0x30),  # offsetof(struct rb_execution_context_struct, cfp)
+    cfp_offset=c_int(0x30),  # offsetof(struct rb_thread_struct, cfp)
     label_offset=c_int(0x18),  # offsetof(struct rb_iseq_location_struct, label)
     path_flavour=c_int(0),
     line_info_size_offset=c_int(0xC0),  # offsetof(struct rb_iseq_constant_body, line_info_size)
     line_info_table_offset=c_int(0x68),  # offsetof(struct rb_iseq_constant_body, line_info_table)
-    lineno_offset=c_int(0x4),  # offsetof(struct rb_iseq_constant_body, line_info_table)
+    lineno_offset=c_int(0x4),  # offsetof(struct iseq_line_info_entry, line_no)
 )
 
 offsets_for_version[("2.5.0", "2.5.3", "2.5.7", "2.5.8")] = VersionConfig(

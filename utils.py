@@ -6,11 +6,15 @@
 import os
 import glob
 import ctypes as ct
+from collections import namedtuple
 from typing import Optional, List, Tuple
 
 from bcc import bcc_symbol_option, bcc_symbol  # type: ignore
 
 from version_specific_config import ruby_thread_name
+
+
+SymbolAddress = namedtuple("SymbolAddress", ['Offset', 'Length'])
 
 
 def is_root() -> bool:
@@ -53,7 +57,7 @@ def ruby_dynamic_linked(pid: int) -> Optional[Tuple[str, int]]:
     return None
 
 
-def symbol_address(binary_path: str, symbol: str) -> Optional[int]:
+def symbol_address(binary_path: str, symbol: str) -> Optional[SymbolAddress]:
     result = None
     STT_OBJECT = 1
 
@@ -72,10 +76,10 @@ def symbol_address(binary_path: str, symbol: str) -> Optional[int]:
 
     symbol_bytes = symbol.encode()
 
-    def exact_match(name, addr, payload, _):
+    def exact_match(name, addr, length, payload):
         nonlocal result
         if name == symbol_bytes:
-            result = addr
+            result = SymbolAddress(addr, length)
             return -1
         return 0
 
@@ -114,8 +118,8 @@ def ruby_version(binary_path: str) -> Optional[bytes]:
 
     # Read the Ruby version off the .rodata section
     with open(binary_path, "rb") as executable:
-        executable.seek(version_address)
-        return executable.read(5)
+        executable.seek(version_address.Offset)
+        return executable.read(version_address.Length).decode().strip("\0")
 
 
 def rb_thread_address(pid: int) -> Optional[Tuple[int, bytes]]:
@@ -132,10 +136,10 @@ def rb_thread_address(pid: int) -> Optional[Tuple[int, bytes]]:
         print(f"not a Ruby process (path: {path}, pid: {pid})")
         return None
 
-    rb_current_thread_name = ruby_thread_name(version.decode())
+    rb_current_thread_name = ruby_thread_name(version)
     sym_addr = symbol_address(path, rb_current_thread_name)
     if sym_addr:
-        return addr + sym_addr, version
+        return addr + sym_addr.Offset, version
     else:
         raise RuntimeError(f"Could not find the thread address for PID={pid}")
 

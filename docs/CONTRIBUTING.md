@@ -53,4 +53,10 @@ Right this the process is quite cumbersome, sorry about this! We'll work on impr
 
 TODO(javierhonduco):
 - publish some of the helpers and tips on how to debug rbperf
-- add how to compile a new Ruby version
+
+## Building Ruby
+
+Use static build with https://github.com/rbenv/ruby-build:
+
+    $ RUBY_CONFIGURE_OPTS=--disable-shared ./bin/ruby-build -v 2.4.10 ./ruby-2.4.10
+    $ cp ./ruby-2.4.10/ruby $RBPERF/tests/rubies/

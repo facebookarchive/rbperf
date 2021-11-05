@@ -95,12 +95,12 @@ class RubyBPFStackWalker:
         self.pids.add(pid)
 
         addr, version = rb_info
-        numeric_version = index_for_version(version.decode())
+        numeric_version = index_for_version(version)
         if numeric_version is None:
             print(f"Ruby {version} not found, skipping")
             return
 
-        print(f"Profiling pid: {pid} (Ruby {version.decode()}) with addr: 0x{addr:02x}")
+        print(f"Profiling pid: {pid} (Ruby {version}) with addr: 0x{addr:02x}")
 
         self.bpf[b"pid_to_rb_thread"][c_uint(pid)] = ProcessData(
             rb_frame_addr=c_ulonglong(addr), rb_version=c_int(numeric_version)
