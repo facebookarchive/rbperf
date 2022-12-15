@@ -1,5 +1,7 @@
 # rbperf
 
+**NOTE:** This repository is no longer maintained. Development for rbperf continues at https://github.com/javierhonduco/rbperf which is maintained by its original author.
+
 rbperf is an experimental Ruby Profiler that runs in Linux's eBPF VM (extended Berkeley Packet Filters)
 
 ## Installation
